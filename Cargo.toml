@@ -8,5 +8,12 @@ edition = "2021"
 [dependencies]
 jni = "0.21.1"
 
-[lib]
-# proc-macro = true
+[[test]]
+name = "integration"
+path = "integration/main.rs"
+harness = false
+
+[dev-dependencies]
+inventory = "0.3.11"
+log = "0.4.19"
+pretty_env_logger = "0.5.0"
