@@ -49,7 +49,6 @@ fn teardown() {}
 fn main() {
   setup();
 
-  let mut libjni: Option<String> = None;
   let mut libjnat: Option<String> = None;
 
   let paths = read_dir(Path::new("../../target/debug/deps")).expect("Failed to read directory");
@@ -66,27 +65,17 @@ fn main() {
         .to_str()
         .expect("Failed to convert filename to string");
 
-      if filename.ends_with("rlib") {
-        if filename.starts_with("libjni") {
-          libjni = Some(
-            path
-              .to_str()
-              .expect("Failed to convert path to string")
-              .to_string(),
-          );
-        } else if filename.starts_with("libjnat") {
-          libjnat = Some(
-            path
-              .to_str()
-              .expect("Failed to convert path to string")
-              .to_string(),
-          );
-        }
+      if filename.starts_with("libjnat") && filename.ends_with("rlib") {
+        libjnat = Some(
+          path
+            .to_str()
+            .expect("Failed to convert path to string")
+            .to_string(),
+        );
       }
     }
   }
 
-  let libjni = libjni.expect("Failed to find libjni rlib");
   let libjnat = libjnat.expect("Failed to find libjnat rlib");
 
   for t in inventory::iter::<IntegrationTest> {
@@ -100,8 +89,6 @@ fn main() {
       .arg("out")
       .arg("-L")
       .arg("dependency=../../target/debug/deps")
-      .arg("--extern")
-      .arg(format!("jni={}", libjni))
       .arg("--extern")
       .arg(format!("jnat={}", libjnat))
       .arg(format!("../tests/lib/{}.rs", t.lib))

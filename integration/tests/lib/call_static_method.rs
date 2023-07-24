@@ -1,10 +1,8 @@
 extern crate jnat;
-extern crate jni;
-
-use jni::{objects::JClass, JNIEnv};
 
 use jnat::{
-  env::{Class, Env},
+  env::Env,
+  jni::{objects::JClass, JNIEnv},
   signature::{Signature, Type},
 };
 

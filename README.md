@@ -9,7 +9,6 @@ Create a new Cargo lib project with `cargo new --lib mylib` and add the followin
 ```toml
 [dependencies]
 jnat = [latest version]
-jni = [latest version]
 
 [lib]
 crate-type = ["cdylib"]
@@ -18,10 +17,9 @@ crate-type = ["cdylib"]
 Add the following to `src/lib.rs`:
 
 ```rust
-use jni::{objects::JClass, JNIEnv};
-
 use jnat::{
   env::{Class, Env},
+  jni::{objects::JClass, JNIEnv}, // jni crate, re-exported by jnat
   signature::{Signature, Type},
 };
 
