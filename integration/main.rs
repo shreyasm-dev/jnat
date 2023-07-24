@@ -6,9 +6,9 @@ pub mod tests;
 
 use std::{
   env::{self, current_exe, set_current_dir},
-  fs::remove_file,
+  fs::{read_dir, remove_file},
   path::Path,
-  process::{Command, exit},
+  process::{exit, Command},
 };
 
 use crate::tests::IntegrationTest;
@@ -46,9 +46,48 @@ fn setup() {
 fn teardown() {}
 
 // TODO: Better output instead of just logging
-// TODO: Paths to JNI and Jnat rlibs are hardcoded, not sure if they change, look into it?
 fn main() {
   setup();
+
+  let mut libjni: Option<String> = None;
+  let mut libjnat: Option<String> = None;
+
+  let paths = read_dir(Path::new("../../target/debug/deps")).expect("Failed to read directory");
+
+  for path in paths {
+    let path = path.expect("Failed to get path");
+    let path = path.path();
+
+    if path.is_file() {
+      let path = path;
+      let filename = path
+        .file_name()
+        .expect("Failed to get filename")
+        .to_str()
+        .expect("Failed to convert filename to string");
+
+      if filename.ends_with("rlib") {
+        if filename.starts_with("libjni") {
+          libjni = Some(
+            path
+              .to_str()
+              .expect("Failed to convert path to string")
+              .to_string(),
+          );
+        } else if filename.starts_with("libjnat") {
+          libjnat = Some(
+            path
+              .to_str()
+              .expect("Failed to convert path to string")
+              .to_string(),
+          );
+        }
+      }
+    }
+  }
+
+  let libjni = libjni.expect("Failed to find libjni rlib");
+  let libjnat = libjnat.expect("Failed to find libjnat rlib");
 
   for t in inventory::iter::<IntegrationTest> {
     println!();
@@ -62,9 +101,9 @@ fn main() {
       .arg("-L")
       .arg("dependency=../../target/debug/deps")
       .arg("--extern")
-      .arg("jni=../../target/debug/deps/libjni-b23e366b6393286e.rlib")
+      .arg(format!("jni={}", libjni))
       .arg("--extern")
-      .arg("jnat=../../target/debug/deps/libjnat-618a78aa1aee40e4.rlib")
+      .arg(format!("jnat={}", libjnat))
       .arg(format!("../tests/lib/{}.rs", t.lib))
       .output()
       .expect("Failed to spawn rustc");
