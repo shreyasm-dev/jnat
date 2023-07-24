@@ -1,14 +1,11 @@
-pub fn add(left: usize, right: usize) -> usize {
-  left + right
+use jni::JNIEnv;
+
+struct Env<'a> {
+  pub jni_env: *mut JNIEnv<'a>, // TODO: Temporarily pub, remove later
 }
 
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn it_works() {
-    let result = add(2, 2);
-    assert_eq!(result, 4);
+impl Env<'_> {
+  fn new(jni_env: *mut JNIEnv) -> Env {
+    Env { jni_env }
   }
 }
