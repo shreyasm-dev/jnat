@@ -49,6 +49,7 @@ fn main() {
   setup();
 
   for t in inventory::iter::<IntegrationTest> {
+    println!();
     info!("Running {}", t.name);
 
     // Compile the Rust file to a dynamic library
