@@ -10,6 +10,6 @@ public class CallStaticMethod {
   }
 
   public static void callback() {
-    System.out.println("Static callback");
+    System.out.print("Static callback\n");
   }
 }
