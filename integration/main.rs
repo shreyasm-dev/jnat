@@ -20,8 +20,9 @@ static DYLIB_EXTENSION: &str = "so";
 #[cfg(target_os = "windows")]
 static DYLIB_EXTENSION: &str = "dll";
 
-// TODO: Ensure this works correctly
 fn get_dylib_name(lib: &str) -> String {
+  #[cfg(target_os = "windows")]
+  return format!("{}.{}", lib, DYLIB_EXTENSION);
   format!("lib{}.{}", lib, DYLIB_EXTENSION)
 }
 
@@ -172,6 +173,18 @@ fn main() {
 
     remove_file(Path::new("out").join(format!("{}.class", t.java_class)))
       .expect(format!("Failed to remove {}.class", t.java_class).as_str());
+
+    #[cfg(target_os = "windows")]
+    {
+      remove_file(Path::new("out").join(format!("{}.exp", get_dylib_name(t.lib))))
+        .expect(format!("Failed to remove {}.lib", get_dylib_name(t.lib)).as_str());
+
+      remove_file(Path::new("out").join(format!("{}.lib", get_dylib_name(t.lib))))
+        .expect(format!("Failed to remove {}.lib", get_dylib_name(t.lib)).as_str());
+
+      remove_file(Path::new("out").join(format!("{}.pdb", t.lib)))
+        .expect(format!("Failed to remove {}.pdb", t.lib).as_str());
+    }
   }
 
   teardown();
