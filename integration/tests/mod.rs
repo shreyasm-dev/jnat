@@ -1,4 +1,5 @@
 pub mod hello;
+pub mod static_call;
 
 #[derive(Debug)]
 pub struct IntegrationTest {
