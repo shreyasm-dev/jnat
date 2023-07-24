@@ -26,6 +26,8 @@ fn get_dylib_name(lib: &str) -> String {
 }
 
 fn setup() {
+  println!("Remember to run cargo build before running this!");
+
   env::set_var("RUST_APP_LOG", "debug");
   pretty_env_logger::init_custom_env("RUST_APP_LOG");
 
