@@ -13,6 +13,19 @@ use std::{
 
 use crate::tests::IntegrationTest;
 
+#[cfg(target_os = "macos")]
+static DYLIB_EXTENSION: &str = "dylib";
+#[cfg(target_os = "linux")]
+static DYLIB_EXTENSION: &str = "so";
+#[cfg(target_os = "windows")]
+static DYLIB_EXTENSION: &str = "dll";
+
+// TODO: Ensure this works correctly
+// Also, relevant to the Java code: on macOS, the lib prefix is not needed, but I think it is on Windows and Linux
+fn get_dylib_name(lib: &str) -> String {
+  format!("lib{}.{}", lib, DYLIB_EXTENSION)
+}
+
 fn setup() {
   env::set_var("RUST_APP_LOG", "debug");
   pretty_env_logger::init_custom_env("RUST_APP_LOG");
@@ -31,7 +44,6 @@ fn setup() {
 // TODO: Is there anything that needs to be done here?
 fn teardown() {}
 
-// TODO: The dylib extension is harcoded, but it's macOS-specific (this code will not work on Windows or Linux)
 // TODO: Better output instead of just logging
 // TODO: Paths to JNI and Jnat rlibs are hardcoded, not sure if they change, look into it?
 fn main() {
@@ -84,8 +96,8 @@ fn main() {
       error!("{} failed", t.name);
     }
 
-    remove_file(Path::new("out").join(format!("lib{}.dylib", t.lib)))
-      .expect(format!("Failed to remove lib{}.dylib", t.lib).as_str());
+    remove_file(Path::new("out").join(get_dylib_name(t.lib)))
+      .expect(format!("Failed to remove {}", get_dylib_name(t.lib)).as_str());
 
     remove_file(Path::new("out").join(format!("{}.h", t.java_class)))
       .expect(format!("Failed to remove {}.h", t.java_class).as_str());
