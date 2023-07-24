@@ -17,16 +17,16 @@ use jnat::{
 };
 
 #[no_mangle]
-pub extern "system" fn Java_StaticCall_caller(
+pub extern "system" fn Java_CallStaticMethod_caller(
   env: JNIEnv,
   _: JClass,
 ) {
   let mut env = env;
   let mut env = Env::new(&mut env);
 
-  // Alternative (remember to rename the second parameter of Java_StaticCall_caller to `class`):
+  // Alternative (remember to rename the second parameter of Java_CallStaticMethod_caller to `class`):
   // let mut class = Class::new(&mut env, class);
-  let mut class = env.class("StaticCall").expect("Failed to find class");
+  let mut class = env.class("CallStaticMethod").expect("Failed to find class");
 
   let res = class
     .call_static_method("callback", Signature::new(vec![], Type::Void), &[])

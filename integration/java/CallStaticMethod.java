@@ -1,12 +1,12 @@
-public class StaticCall {
+public class CallStaticMethod {
   private static native void caller();
 
   static {
-    System.loadLibrary("static_call");
+    System.loadLibrary("call_static_method");
   }
 
   public static void main(String[] args) {
-    StaticCall.caller();
+    CallStaticMethod.caller();
   }
 
   public static void callback() {
