@@ -21,7 +21,6 @@ static DYLIB_EXTENSION: &str = "so";
 static DYLIB_EXTENSION: &str = "dll";
 
 // TODO: Ensure this works correctly
-// Also, relevant to the Java code: on macOS, the lib prefix is not needed, but I think it is on Windows and Linux
 fn get_dylib_name(lib: &str) -> String {
   format!("lib{}.{}", lib, DYLIB_EXTENSION)
 }
