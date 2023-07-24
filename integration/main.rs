@@ -8,7 +8,7 @@ use std::{
   env::{self, current_exe, set_current_dir},
   fs::remove_file,
   path::Path,
-  process::Command,
+  process::{Command, exit},
 };
 
 use crate::tests::IntegrationTest;
@@ -52,7 +52,7 @@ fn main() {
     info!("Running {}", t.name);
 
     // Compile the Rust file to a dynamic library
-    Command::new("rustc")
+    let output = Command::new("rustc")
       .arg("--crate-type=cdylib")
       .arg("--out-dir")
       .arg("out")
@@ -66,8 +66,22 @@ fn main() {
       .output()
       .expect("Failed to spawn rustc");
 
+    let code = output.status.code();
+
+    if code != Some(0) {
+      error!(
+        "Failed to compile {} (rustc exited with code {:?})",
+        t.lib, code
+      );
+      error!(
+        "{}",
+        String::from_utf8(output.stderr).expect("Failed to convert stderr to string")
+      );
+      exit(code.unwrap_or(1));
+    }
+
     // Compile the Java class (outputs a class and a header file)
-    Command::new("javac")
+    let output = Command::new("javac")
       .arg("-h")
       .arg("out")
       .arg("-d")
@@ -76,18 +90,44 @@ fn main() {
       .output()
       .expect("Failed to spawn javac");
 
+    let code = output.status.code();
+
+    if code != Some(0) {
+      error!(
+        "Failed to compile {} (javac exited with code {:?})",
+        t.java_class, code
+      );
+      error!(
+        "{}",
+        String::from_utf8(output.stderr).expect("Failed to convert stderr to string")
+      );
+      exit(code.unwrap_or(1));
+    }
+
     // Run the previously-compiled Java class
-    let out = String::from_utf8(
-      Command::new("java")
-        .arg("-Djava.library.path=out")
-        .arg("-cp")
-        .arg("out")
-        .arg(t.java_class)
-        .output()
-        .expect("Failed to spawn java")
-        .stdout,
-    )
-    .expect("Failed to convert output to string");
+    let output = Command::new("java")
+      .arg("-Djava.library.path=out")
+      .arg("-cp")
+      .arg("out")
+      .arg(t.java_class)
+      .output()
+      .expect("Failed to spawn java");
+
+    let code = output.status.code();
+
+    if code != Some(0) {
+      error!(
+        "Failed to run {} (java exited with code {:?})",
+        t.java_class, code
+      );
+      error!(
+        "{}",
+        String::from_utf8(output.stderr).expect("Failed to convert stderr to string")
+      );
+      exit(code.unwrap_or(1));
+    }
+
+    let out = String::from_utf8(output.stdout).expect("Failed to convert stdout to string");
 
     if (t.test_fn)(out) {
       info!("{} passed", t.name);
