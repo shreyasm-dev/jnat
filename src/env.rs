@@ -1,3 +1,7 @@
+use crate::{
+  signature::Signature,
+  value::{Object, Value},
+};
 use jni::{
   errors::Error,
   objects::{JClass, JObject, JValueGen, JValueOwned},
@@ -5,25 +9,32 @@ use jni::{
   JNIEnv,
 };
 
-use crate::{
-  signature::Signature,
-  value::{Object, Value},
-};
-
+/// A wrapper around the JNI environment
 #[derive(Clone, Copy)]
 pub struct Env<'a> {
   jni_env: &'a JNIEnv<'a>,
 }
 
 impl<'a> Env<'a> {
+  /// Creates a new Env
+  /// 
+  /// # Arguments
+  /// 
+  /// * `jni_env` - The JNI environment
   pub fn new(jni_env: &'a JNIEnv<'a>) -> Env<'a> {
     Env { jni_env: jni_env }
   }
 
+  /// Gets the native interface
   pub fn get_native_interface(&self) -> *mut *const JNINativeInterface_ {
     self.jni_env.get_native_interface()
   }
 
+  /// Gets a class, given a qualified name
+  /// 
+  /// # Arguments
+  /// 
+  /// * `name` - The qualified name of the class
   pub fn class(&'a self, name: &str) -> Result<Class<'a>, Error> {
     let mut jni_env = unsafe { JNIEnv::from_raw(self.get_native_interface()) }.unwrap();
 
@@ -35,10 +46,20 @@ impl<'a> Env<'a> {
     }
   }
 
+  /// Converts a JObject into an Object
+  /// 
+  /// # Arguments
+  /// 
+  /// * `object` - The JObject to wrap
   pub fn object(&'a self, object: &'a JObject<'a>) -> Object<'a> {
     Object::new(self, object)
   }
 
+  /// Converts a string into a JObject
+  /// 
+  /// # Arguments
+  /// 
+  /// * `string` - The string to convert
   pub fn string(&'a self, string: &'a str) -> Result<JObject<'a>, Error> {
     let string = self.jni_env.new_string(string);
 
@@ -49,16 +70,30 @@ impl<'a> Env<'a> {
   }
 }
 
+/// A struct wrapping a JClass
 pub struct Class<'a> {
   env: &'a Env<'a>,
   class: JClass<'a>,
 }
 
 impl<'a> Class<'a> {
+  /// Creates a new Class
+  /// 
+  /// # Arguments
+  /// 
+  /// * `env` - The environment
+  /// * `class` - The JClass to wrap
   pub fn new(env: &'a Env<'a>, class: JClass<'a>) -> Class<'a> {
     Class { env, class }
   }
 
+  /// Calls a static method on the class
+  /// 
+  /// # Arguments
+  /// 
+  /// * `name` - The name of the method
+  /// * `signature` - The signature of the method
+  /// * `args` - The arguments to pass to the method
   pub fn call_static_method(
     &self,
     name: &str,

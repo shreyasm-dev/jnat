@@ -2,6 +2,8 @@
 
 A wrapper around the [jni](https://crates.io/crates/jni) crate
 
+View the [documentation](https://docs.rs/jnat)
+
 ## Example
 
 Create a new Cargo lib project with `cargo new --lib mylib` and add the following to `Cargo.toml`:

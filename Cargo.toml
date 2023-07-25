@@ -1,12 +1,13 @@
 [package]
 name = "jnat"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 license = "MIT"
 description = "A wrapper around the jni crate"
 repository = "https://github.com/shreyasm-dev/jnat/"
 readme = "README.md"
 categories = ["api-bindings"]
+documentation = "https://docs.rs/jnat/"
 
 [dependencies]
 jni = "0.21.1"

@@ -1,10 +1,19 @@
+/// A representation of the arguments and return type of a method
 #[derive(Clone, Copy)]
 pub struct Signature<'a> {
+  /// The arguments of the method
   pub arguments: &'a [Type<'a>],
+  /// The return type of the method
   pub return_type: Type<'a>,
 }
 
 impl<'a> Signature<'a> {
+  /// Creates a new Signature
+  /// 
+  /// # Arguments
+  /// 
+  /// * `arguments` - The arguments of the method
+  /// * `return_type` - The return type of the method
   pub fn new(arguments: &'a [Type<'a>], return_type: Type<'a>) -> Signature<'a> {
     Signature {
       arguments,
@@ -28,23 +37,36 @@ impl<'a> From<Signature<'a>> for String {
   }
 }
 
+/// An enum representing Java types
 #[derive(Clone, Copy)]
 pub enum Type<'a> {
+  /// A boolean type
   Boolean,
+  /// A byte type
   Byte,
+  /// A char type
   Char,
+  /// A short type
   Short,
+  /// An int type
   Int,
+  /// A long type
   Long,
+  /// A float type
   Float,
+  /// A double type
   Double,
+  /// A void type
   Void,
+  /// An object type
   Object(&'a str),
+  /// An array type
   Array(&'a Type<'a>),
 }
 
 impl<'a> Type<'a> {
-  fn to_string(&self) -> String {
+  /// Converts a `Type` into a `String`
+  pub fn to_string(&self) -> String {
     let result = match self {
       Type::Boolean => String::from("Z"),
       Type::Byte => String::from("B"),
