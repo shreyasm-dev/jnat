@@ -1,6 +1,6 @@
 use jni::{
   errors::Error,
-  objects::{JClass, JObject, JString, JValueGen, JValueOwned},
+  objects::{JClass, JObject, JValueGen, JValueOwned},
   sys::JNINativeInterface_,
   JNIEnv,
 };
@@ -12,7 +12,7 @@ use crate::{
 
 #[derive(Clone, Copy)]
 pub struct Env<'a> {
-  pub jni_env: &'a JNIEnv<'a>,
+  jni_env: &'a JNIEnv<'a>,
 }
 
 impl<'a> Env<'a> {
@@ -39,11 +39,11 @@ impl<'a> Env<'a> {
     Object::new(self, object)
   }
 
-  pub fn string(&'a self, string: &'a str) -> Result<JString<'a>, Error> {
+  pub fn string(&'a self, string: &'a str) -> Result<JObject<'a>, Error> {
     let string = self.jni_env.new_string(string);
 
     match string {
-      Ok(string) => Ok(string),
+      Ok(string) => Ok(JObject::from(string)),
       Err(e) => Err(e),
     }
   }

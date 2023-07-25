@@ -9,7 +9,7 @@ public class CallStaticMethod {
     CallStaticMethod.caller();
   }
 
-  public static void callback(int n) {
-    System.out.print("Static callback: " + n + "\n");
+  public static void callback(int n, String s) {
+    System.out.print("Static callback: " + n + s + "\n");
   }
 }
