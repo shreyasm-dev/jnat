@@ -4,7 +4,7 @@ use jni::{
   JNIEnv,
 };
 
-use crate::signature::Signature;
+use crate::{signature::Signature, value::Value};
 
 pub struct Env<'a> {
   jni_env: &'a mut JNIEnv<'a>,
@@ -39,13 +39,19 @@ impl<'a> Class<'a> {
     &mut self,
     name: &str,
     signature: Signature,
-    args: &[JValueGen<&JObject<'_>>],
+    args: &[Value],
   ) -> jni::errors::Result<JValueOwned<'_>> {
     let class = &self.class;
     let signature: String = signature.into();
-    self
-      .env
-      .jni_env
-      .call_static_method(class, name, signature, args)
+    self.env.jni_env.call_static_method(
+      class,
+      name,
+      signature,
+      args
+        .iter()
+        .map(|o| o.to_jvaluegen())
+        .collect::<Vec<JValueGen<&JObject>>>()
+        .as_slice(),
+    )
   }
 }

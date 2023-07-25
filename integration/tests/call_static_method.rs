@@ -1,7 +1,7 @@
 use super::IntegrationTest;
 
 fn test_call_static_method(s: String) -> bool {
-  return s == "Static callback\n";
+  return s == "Static callback: 0\n";
 }
 
 inventory::submit! {IntegrationTest {

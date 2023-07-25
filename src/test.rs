@@ -4,14 +4,17 @@ mod signature {
 
   #[test]
   fn signature_from() {
-    let signature: String = Signature::new(vec![], Type::Void).into();
+    let signature: String = Signature::new(&[], Type::Void).into();
     assert_eq!(signature, "()V");
 
-    let signature: String = Signature::new(vec![Type::Boolean], Type::Boolean).into();
+    let signature: String = Signature::new(&[Type::Boolean], Type::Boolean).into();
     assert_eq!(signature, "(Z)Z");
 
     let signature: String = Signature::new(
-      vec![Type::Array(Box::new(Type::Object("java/lang/String"))), Type::Array(Box::new(Type::Char))],
+      &[
+        Type::Array(&Type::Object("java/lang/String")),
+        Type::Array(&Type::Char),
+      ],
       Type::Char,
     )
     .into();

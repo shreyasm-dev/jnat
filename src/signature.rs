@@ -1,10 +1,11 @@
+#[derive(Clone)]
 pub struct Signature {
-  pub arguments: Vec<Type>,
+  pub arguments: &'static [Type],
   pub return_type: Type,
 }
 
 impl Signature {
-  pub fn new(arguments: Vec<Type>, return_type: Type) -> Signature {
+  pub fn new(arguments: &'static [Type], return_type: Type) -> Signature {
     Signature {
       arguments,
       return_type,
@@ -27,6 +28,7 @@ impl From<Signature> for String {
   }
 }
 
+#[derive(Clone, Copy)]
 pub enum Type {
   Boolean,
   Byte,
@@ -38,7 +40,7 @@ pub enum Type {
   Double,
   Void,
   Object(&'static str),
-  Array(Box<Type>),
+  Array(&'static Type),
 }
 
 impl Type {
@@ -54,7 +56,7 @@ impl Type {
       Type::Double => String::from("D"),
       Type::Void => String::from("V"),
       Type::Object(s) => format!("L{};", s),
-      Type::Array(t) => format!("[{}", t.as_ref().to_string()),
+      Type::Array(t) => format!("[{}", t.to_string()),
     };
 
     result

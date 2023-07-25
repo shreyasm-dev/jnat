@@ -30,7 +30,7 @@ pub extern "system" fn Java_HelloWorld_caller(env: JNIEnv, class: JClass) {
   let mut class = Class::new(&mut env, class);
 
   class
-    .call_static_method("hello", Signature::new(vec![], Type::Void), &[])
+    .call_static_method("hello", Signature::new(&[], Type::Void), &[])
     .unwrap();
 }
 ```
