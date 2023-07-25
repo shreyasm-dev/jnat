@@ -1,14 +1,12 @@
 [package]
 name = "jnat"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 license = "MIT"
 description = "A wrapper around the jni crate"
 repository = "https://github.com/shreyasm-dev/jnat/"
 readme = "README.md"
 categories = ["api-bindings"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 jni = "0.21.1"
@@ -22,3 +20,7 @@ harness = false
 inventory = "0.3.11"
 log = "0.4.19"
 pretty_env_logger = "0.5.0"
+
+[features]
+default = ["jni"]
+jni = []

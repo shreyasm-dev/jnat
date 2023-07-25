@@ -56,3 +56,7 @@ public class HelloWorld {
 ```
 
 Compile the java file with `javac -h . HelloWorld.java`. Then, run `java -Djava.library.path=path/to/target/debug HelloWorld`. You should see `Hello, world!` printed to the console.
+
+## Notes
+
+- Jnat re-exports jni by default. If you want to use a different version of jni, you can disable either the default features or the `jni` feature.
