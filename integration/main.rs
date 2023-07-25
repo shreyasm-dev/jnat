@@ -23,7 +23,8 @@ static DYLIB_EXTENSION: &str = "dll";
 fn get_dylib_name(lib: &str) -> String {
   #[cfg(target_os = "windows")]
   return format!("{}.{}", lib, DYLIB_EXTENSION);
-  format!("lib{}.{}", lib, DYLIB_EXTENSION)
+  #[cfg(not(target_os = "windows"))]
+  return format!("lib{}.{}", lib, DYLIB_EXTENSION);
 }
 
 fn setup() {
