@@ -18,10 +18,10 @@ impl From<Signature> for String {
 
     signature.push('(');
     for arg in value.arguments {
-      signature.push(arg.to_char());
+      signature.push_str(&arg.to_string());
     }
     signature.push(')');
-    signature.push(value.return_type.to_char());
+    signature.push_str(&value.return_type.to_string());
 
     signature
   }
@@ -42,19 +42,21 @@ pub enum Type {
 }
 
 impl Type {
-  fn to_char(&self) -> char {
-    match self {
-      Type::Boolean => 'Z',
-      Type::Byte => 'B',
-      Type::Char => 'C',
-      Type::Short => 'S',
-      Type::Int => 'I',
-      Type::Long => 'J',
-      Type::Float => 'F',
-      Type::Double => 'D',
-      Type::Void => 'V',
-      Type::Object(_) => 'L',
-      Type::Array(_) => '[',
-    }
+  fn to_string(&self) -> String {
+    let result = match self {
+      Type::Boolean => String::from("Z"),
+      Type::Byte => String::from("B"),
+      Type::Char => String::from("C"),
+      Type::Short => String::from("S"),
+      Type::Int => String::from("I"),
+      Type::Long => String::from("J"),
+      Type::Float => String::from("F"),
+      Type::Double => String::from("D"),
+      Type::Void => String::from("V"),
+      Type::Object(s) => format!("L{};", s),
+      Type::Array(t) => format!("[{}", t.as_ref().to_string()),
+    };
+
+    result
   }
 }
