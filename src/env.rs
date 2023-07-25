@@ -4,10 +4,13 @@ use jni::{
   JNIEnv,
 };
 
-use crate::{signature::Signature, value::Value};
+use crate::{
+  signature::Signature,
+  value::{Object, Value},
+};
 
 pub struct Env<'a> {
-  jni_env: &'a mut JNIEnv<'a>,
+  pub jni_env: &'a mut JNIEnv<'a>,
 }
 
 impl<'a> Env<'a> {
@@ -22,6 +25,16 @@ impl<'a> Env<'a> {
       Ok(class) => Ok(Class::new(self, class)),
       Err(e) => Err(e),
     }
+  }
+
+  pub fn object(&'a mut self, object: &'a JObject<'a>) -> Object<'a> {
+    Object::new(self, object)
+  }
+}
+
+impl From<&'static Env<'static>> for &'static JNIEnv<'static> {
+  fn from(value: &'static Env<'static>) -> Self {
+    value.jni_env
   }
 }
 

@@ -1,10 +1,12 @@
 use jni::{
-  objects::{JObject, JValueGen},
+  objects::{JObject, JValueGen, JValueOwned},
   sys::{jboolean, jchar},
 };
 
+use crate::{env::Env, signature::Signature};
+
 #[derive(Clone, Copy)]
-pub enum Value {
+pub enum Value<'a> {
   Boolean(bool),
   Byte(i8),
   Char(char),
@@ -15,11 +17,11 @@ pub enum Value {
   Double(f64),
   // Null,
   Void,
-  Object(Object),
+  Object(Object<'a>),
 }
 
-impl Value {
-  pub fn to_jvaluegen(self) -> JValueGen<&'static JObject<'static>> {
+impl<'a> Value<'a> {
+  pub fn to_jvaluegen(self) -> JValueGen<&'a JObject<'a>> {
     match self {
       Self::Boolean(b) => JValueGen::Bool(b as jboolean),
       Self::Byte(b) => JValueGen::Byte(b),
@@ -37,12 +39,47 @@ impl Value {
 }
 
 #[derive(Clone, Copy)]
-pub struct Object {
-  object: &'static JObject<'static>,
+pub struct Object<'a> {
+  env: *mut Env<'a>,
+  object: &'a JObject<'a>,
 }
 
-impl Object {
-  pub fn new(object: &'static JObject<'static>) -> Object {
-    Object { object }
+impl<'a> Object<'a> {
+  pub fn new(env: *mut Env<'a>, object: &'a JObject<'a>) -> Object<'a> {
+    Object { env, object }
+  }
+
+  pub fn call_method(
+    &mut self,
+    name: &str,
+    signature: Signature,
+    args: &[Value],
+  ) -> jni::errors::Result<JValueOwned<'_>> {
+    let signature: String = signature.into();
+
+    unsafe { // TODO: Find a way to avoid this unsafe block
+      (*self.env).jni_env.call_method(
+        *self,
+        name,
+        signature,
+        args
+          .iter()
+          .map(|o| o.to_jvaluegen())
+          .collect::<Vec<JValueGen<&JObject>>>()
+          .as_slice(),
+      )
+    }
+  }
+}
+
+impl<'a> AsRef<JObject<'a>> for Object<'a> {
+  fn as_ref(&self) -> &JObject<'a> {
+    self.object
+  }
+}
+
+impl<'a> From<Object<'a>> for &JObject<'a> {
+  fn from(value: Object<'a>) -> Self {
+    value.object
   }
 }

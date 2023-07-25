@@ -1,11 +1,11 @@
 #[derive(Clone)]
-pub struct Signature {
-  pub arguments: &'static [Type],
-  pub return_type: Type,
+pub struct Signature<'a> {
+  pub arguments: &'a [Type<'a>],
+  pub return_type: Type<'a>,
 }
 
-impl Signature {
-  pub fn new(arguments: &'static [Type], return_type: Type) -> Signature {
+impl<'a> Signature<'a> {
+  pub fn new(arguments: &'a [Type<'a>], return_type: Type<'a>) -> Signature<'a> {
     Signature {
       arguments,
       return_type,
@@ -13,7 +13,7 @@ impl Signature {
   }
 }
 
-impl From<Signature> for String {
+impl<'a> From<Signature<'a>> for String {
   fn from(value: Signature) -> Self {
     let mut signature = String::new();
 
@@ -29,7 +29,7 @@ impl From<Signature> for String {
 }
 
 #[derive(Clone, Copy)]
-pub enum Type {
+pub enum Type<'a> {
   Boolean,
   Byte,
   Char,
@@ -39,11 +39,11 @@ pub enum Type {
   Float,
   Double,
   Void,
-  Object(&'static str),
-  Array(&'static Type),
+  Object(&'a str),
+  Array(&'a Type<'a>),
 }
 
-impl Type {
+impl<'a> Type<'a> {
   fn to_string(&self) -> String {
     let result = match self {
       Type::Boolean => String::from("Z"),
