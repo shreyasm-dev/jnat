@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Signature<'a> {
   pub arguments: &'a [Type<'a>],
   pub return_type: Type<'a>,

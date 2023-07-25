@@ -1,6 +1,7 @@
 use jni::{
   errors::Error,
-  objects::{JClass, JObject, JValueGen, JValueOwned},
+  objects::{JClass, JObject, JString, JValueGen, JValueOwned},
+  sys::JNINativeInterface_,
   JNIEnv,
 };
 
@@ -9,17 +10,24 @@ use crate::{
   value::{Object, Value},
 };
 
+#[derive(Clone, Copy)]
 pub struct Env<'a> {
-  pub jni_env: &'a mut JNIEnv<'a>,
+  pub jni_env: &'a JNIEnv<'a>,
 }
 
 impl<'a> Env<'a> {
-  pub fn new(jni_env: &'a mut JNIEnv<'a>) -> Env<'a> {
-    Env { jni_env }
+  pub fn new(jni_env: &'a JNIEnv<'a>) -> Env<'a> {
+    Env { jni_env: jni_env }
   }
 
-  pub fn class(&'a mut self, name: &str) -> Result<Class<'a>, Error> {
-    let class = self.jni_env.find_class(name);
+  pub fn get_native_interface(&self) -> *mut *const JNINativeInterface_ {
+    self.jni_env.get_native_interface()
+  }
+
+  pub fn class(&'a self, name: &str) -> Result<Class<'a>, Error> {
+    let mut jni_env = unsafe { JNIEnv::from_raw(self.get_native_interface()) }.unwrap();
+
+    let class = jni_env.find_class(name);
 
     match class {
       Ok(class) => Ok(Class::new(self, class)),
@@ -27,36 +35,40 @@ impl<'a> Env<'a> {
     }
   }
 
-  pub fn object(&'a mut self, object: &'a JObject<'a>) -> Object<'a> {
+  pub fn object(&'a self, object: &'a JObject<'a>) -> Object<'a> {
     Object::new(self, object)
   }
-}
 
-impl From<&'static Env<'static>> for &'static JNIEnv<'static> {
-  fn from(value: &'static Env<'static>) -> Self {
-    value.jni_env
+  pub fn string(&'a self, string: &'a str) -> Result<JString<'a>, Error> {
+    let string = self.jni_env.new_string(string);
+
+    match string {
+      Ok(string) => Ok(string),
+      Err(e) => Err(e),
+    }
   }
 }
 
 pub struct Class<'a> {
-  env: &'a mut Env<'a>,
+  env: &'a Env<'a>,
   class: JClass<'a>,
 }
 
 impl<'a> Class<'a> {
-  pub fn new(env: &'a mut Env<'a>, class: JClass<'a>) -> Class<'a> {
+  pub fn new(env: &'a Env<'a>, class: JClass<'a>) -> Class<'a> {
     Class { env, class }
   }
 
   pub fn call_static_method(
-    &mut self,
+    &self,
     name: &str,
     signature: Signature,
     args: &[Value],
   ) -> jni::errors::Result<JValueOwned<'_>> {
     let class = &self.class;
     let signature: String = signature.into();
-    self.env.jni_env.call_static_method(
+    let mut jni_env = unsafe { JNIEnv::from_raw(self.env.get_native_interface()) }.unwrap();
+    jni_env.call_static_method(
       class,
       name,
       signature,

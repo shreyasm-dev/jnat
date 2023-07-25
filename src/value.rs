@@ -40,35 +40,34 @@ impl<'a> Value<'a> {
 
 #[derive(Clone, Copy)]
 pub struct Object<'a> {
-  env: *mut Env<'a>,
+  env: &'a Env<'a>,
   object: &'a JObject<'a>,
 }
 
 impl<'a> Object<'a> {
-  pub fn new(env: *mut Env<'a>, object: &'a JObject<'a>) -> Object<'a> {
+  pub fn new(env: &'a Env<'a>, object: &'a JObject<'a>) -> Object<'a> {
     Object { env, object }
   }
 
   pub fn call_method(
-    &mut self,
+    &self,
     name: &str,
     signature: Signature,
     args: &[Value],
   ) -> jni::errors::Result<JValueOwned<'_>> {
     let signature: String = signature.into();
 
-    unsafe { // TODO: Find a way to avoid this unsafe block
-      (*self.env).jni_env.call_method(
-        *self,
-        name,
-        signature,
-        args
-          .iter()
-          .map(|o| o.to_jvaluegen())
-          .collect::<Vec<JValueGen<&JObject>>>()
-          .as_slice(),
-      )
-    }
+    let mut jni_env = unsafe { jni::JNIEnv::from_raw(self.env.get_native_interface()) }.unwrap();
+    jni_env.call_method(
+      *self,
+      name,
+      signature,
+      args
+        .iter()
+        .map(|o| o.to_jvaluegen())
+        .collect::<Vec<JValueGen<&JObject>>>()
+        .as_slice(),
+    )
   }
 }
 
