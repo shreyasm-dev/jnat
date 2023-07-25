@@ -3,7 +3,7 @@ extern crate jnat;
 use jnat::{
   env::Env,
   jni::{
-    objects::{JClass, JObject, JString},
+    objects::{JClass, JObject},
     JNIEnv,
   },
   signature::{Signature, Type},
