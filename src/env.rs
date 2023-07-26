@@ -60,7 +60,7 @@ impl<'a> Env<'a> {
   /// # Arguments
   ///
   /// * `string` - The JString to convert
-  pub fn get_string(&'a self, string: &'a JString<'a>) -> Result<String, Error> {
+  pub fn get_string(&'a self, string: JString<'a>) -> Result<String, Error> {
     let mut jni_env = self.get_jni_env();
     Ok(jni_env.get_string(&string)?.into())
   }
