@@ -20,10 +20,12 @@ Add the following to `src/lib.rs`:
 
 ```rust
 use jnat::{
-  env::{Class, Env},
   jnat_macros::jnat,
   jni::{objects::JClass, JNIEnv}, // jni crate, re-exported by jnat
-  signature::{Signature, Type},
+  Class,
+  Env,
+  Signature,
+  Type,
 };
 
 #[jnat(HelloWorld)]
