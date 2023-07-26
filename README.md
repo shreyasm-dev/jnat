@@ -28,11 +28,12 @@ use jnat::{
   Type,
 };
 
-#[jnat(HelloWorld)]
+jnat!(HelloWorld, caller, (JNIEnv, JClass) -> ());
+
 fn caller(env: JNIEnv, class: JClass) {
   let mut env = env;
   let mut env = Env::new(&mut env);
-  let mut class = Class::new(&mut env, class);
+  let class = Class::new(&mut env, class);
 
   class
     .call_static_method("hello", Signature::new(&[], Type::Void), &[])
