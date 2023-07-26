@@ -1,4 +1,4 @@
-use crate::{env::Env, signature::Signature, value::Value};
+use crate::{env::Env, signature::Signature, value::Value, Type};
 use jni::objects::{JClass, JObject, JValueGen};
 
 /// A struct wrapping a JClass
@@ -67,6 +67,24 @@ impl<'a> Class<'a> {
         .collect::<Vec<JValueGen<&JObject>>>()
         .as_slice(),
     )
+  }
+
+  /// Gets a static field on the class
+  /// 
+  /// # Arguments
+  /// 
+  /// * `name` - The name of the field
+  /// * `type` - The type of the field
+  pub fn get_static_field(
+    &self,
+    name: &str,
+    r#type: Type,
+  ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
+    let class = &self.class;
+    let r#type: String = r#type.to_string();
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.get_static_field(class, name, r#type)
   }
 
   /// Get the wrapped class
