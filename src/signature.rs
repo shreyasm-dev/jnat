@@ -65,7 +65,7 @@ pub enum Type<'a> {
 }
 
 impl<'a> Type<'a> {
-  /// Converts a `Type` into a `String`
+  /// Converts a Type into a String
   pub fn to_string(&self) -> String {
     let result = match self {
       Type::Boolean => String::from("Z"),

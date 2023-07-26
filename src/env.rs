@@ -4,8 +4,8 @@ use crate::{
 };
 use jni::{
   errors::Error,
-  objects::{JClass, JObject, JString, JValueGen, JValueOwned},
-  JNIEnv,
+  objects::{JClass, JObject, JString, JValueGen},
+  JNIEnv, sys::{jboolean, jchar},
 };
 
 /// A wrapper around the JNI environment
@@ -83,6 +83,46 @@ impl<'a> Env<'a> {
       Err(e) => Err(e),
     }
   }
+
+  /// Gets a JValueGen<JObject>, given a Value
+  /// 
+  /// # Arguments
+  /// 
+  /// * `value` - The Value to convert
+  pub fn value(self, value: Value<'a>) -> JValueGen<&'a JObject<'a>> {
+    match value {
+      Value::Boolean(b) => JValueGen::Bool(b as jboolean),
+      Value::Byte(b) => JValueGen::Byte(b),
+      Value::Char(c) => JValueGen::Char(c as jchar),
+      Value::Short(s) => JValueGen::Short(s),
+      Value::Int(i) => JValueGen::Int(i),
+      Value::Long(l) => JValueGen::Long(l),
+      Value::Float(f) => JValueGen::Float(f),
+      Value::Double(d) => JValueGen::Double(d),
+      Value::Void => JValueGen::Void,
+      Value::Object(object) => JValueGen::Object(object.get_object()),
+    }
+  }
+
+  /// Gets a Value, given a JValueGen<JObject>
+  ///
+  /// # Arguments
+  ///
+  /// * `object` - The JValueGen<JObject> to convert
+  pub fn get_value(&self, jvaluegen: JValueGen<&'a JObject<'a>>) -> Value {
+    match jvaluegen {
+      JValueGen::Bool(b) => Value::Boolean(b != 0),
+      JValueGen::Byte(b) => Value::Byte(b),
+      JValueGen::Char(c) => Value::Char(c as u8 as char),
+      JValueGen::Short(s) => Value::Short(s),
+      JValueGen::Int(i) => Value::Int(i),
+      JValueGen::Long(l) => Value::Long(l),
+      JValueGen::Float(f) => Value::Float(f),
+      JValueGen::Double(d) => Value::Double(d),
+      JValueGen::Object(o) => Value::Object(Object::new(self, o)),
+      JValueGen::Void => Value::Void,
+    }
+  }
 }
 
 /// A struct wrapping a JClass
@@ -114,9 +154,10 @@ impl<'a> Class<'a> {
     name: &str,
     signature: Signature,
     args: &[Value],
-  ) -> jni::errors::Result<JValueOwned<'_>> {
+  ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
     let class = &self.class;
     let signature: String = signature.into();
+
     let mut jni_env = self.env.get_jni_env();
     jni_env.call_static_method(
       class,
@@ -124,7 +165,7 @@ impl<'a> Class<'a> {
       signature,
       args
         .iter()
-        .map(|o| o.to_jvaluegen())
+        .map(|o| self.env.value(*o))
         .collect::<Vec<JValueGen<&JObject>>>()
         .as_slice(),
     )

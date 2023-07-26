@@ -1,6 +1,6 @@
 use crate::{env::Env, signature::Signature};
 use jni::{
-  objects::{JObject, JValueGen, JValueOwned},
+  objects::{JObject, JValueGen},
   sys::{jboolean, jchar},
 };
 
@@ -23,7 +23,7 @@ pub enum Value<'a> {
   Float(f32),
   /// A double value
   Double(f64),
-  // Null,
+  // Null, // TODO: Implement this
   /// A void value
   Void,
   /// An object value
@@ -31,7 +31,7 @@ pub enum Value<'a> {
 }
 
 impl<'a> Value<'a> {
-  /// Converts a `Value` into a `JValueGen`
+  /// Converts a Value into a JValueGen
   pub fn to_jvaluegen(self) -> JValueGen<&'a JObject<'a>> {
     match self {
       Self::Boolean(b) => JValueGen::Bool(b as jboolean),
@@ -58,9 +58,9 @@ pub struct Object<'a> {
 
 impl<'a> Object<'a> {
   /// Creates a new Object
-  /// 
+  ///
   /// # Arguments
-  /// 
+  ///
   /// * `env` - The environment
   /// * `object` - The JObject to wrap
   pub fn new(env: &'a Env<'a>, object: &'a JObject<'a>) -> Object<'a> {
@@ -68,9 +68,9 @@ impl<'a> Object<'a> {
   }
 
   /// Calls a method on the object
-  /// 
+  ///
   /// # Arguments
-  /// 
+  ///
   /// * `name` - The name of the method
   /// * `signature` - The signature of the method
   /// * `args` - The arguments to pass to the method
@@ -79,12 +79,12 @@ impl<'a> Object<'a> {
     name: &str,
     signature: Signature,
     args: &[Value],
-  ) -> jni::errors::Result<JValueOwned<'_>> {
+  ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
     let signature: String = signature.into();
 
     let mut jni_env = self.env.get_jni_env();
     jni_env.call_method(
-      *self,
+      self.object,
       name,
       signature,
       args
@@ -94,10 +94,9 @@ impl<'a> Object<'a> {
         .as_slice(),
     )
   }
-}
 
-impl<'a> AsRef<JObject<'a>> for Object<'a> {
-  fn as_ref(&self) -> &JObject<'a> {
+  /// Gets the wrapped object
+  pub fn get_object(&self) -> &'a JObject<'a> {
     self.object
   }
 }
