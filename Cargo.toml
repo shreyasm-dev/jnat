@@ -11,7 +11,7 @@ documentation = "https://docs.rs/jnat/"
 
 [dependencies]
 jni = "0.21.1"
-jnat-macros = { path = "jnat-macros", optional = true }
+jnat-macros = { version = "0.1.0", optional = true }
 
 [[test]]
 name = "integration"
