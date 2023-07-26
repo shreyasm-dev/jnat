@@ -47,6 +47,28 @@ impl<'a> Class<'a> {
     )
   }
 
+  /// Creates an instance of the class
+  ///
+  /// # Arguments
+  ///
+  /// * `signature` - The signature of the constructor
+  /// * `args` - The arguments to pass to the constructor
+  pub fn new_instance(&self, signature: Signature, args: &[Value]) -> jni::errors::Result<JObject> {
+    let class = &self.class;
+    let signature: String = signature.into();
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.new_object(
+      class,
+      signature,
+      args
+        .iter()
+        .map(|o| self.env.value(*o))
+        .collect::<Vec<JValueGen<&JObject>>>()
+        .as_slice(),
+    )
+  }
+
   /// Get the wrapped class
   pub fn get_class(self) -> JClass<'a> {
     self.class
