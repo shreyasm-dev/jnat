@@ -4,7 +4,7 @@ use crate::{
 };
 use jni::{
   errors::Error,
-  objects::{JClass, JObject, JValueGen, JValueOwned},
+  objects::{JClass, JObject, JValueGen, JValueOwned, JString},
   sys::JNINativeInterface_,
   JNIEnv,
 };
@@ -65,6 +65,22 @@ impl<'a> Env<'a> {
 
     match string {
       Ok(string) => Ok(JObject::from(string)),
+      Err(e) => Err(e),
+    }
+  }
+
+  /// Gets a string from the JVM, given a JString
+  /// 
+  /// # Arguments
+  /// 
+  /// * `string` - The JString to convert
+  pub fn get_string(&'a self, string: &'a JString<'a>) -> Result<String, Error> {
+    let mut jni_env = unsafe { JNIEnv::from_raw(self.get_native_interface()) }.unwrap();
+
+    let string = jni_env.get_string(&string);
+
+    match string {
+      Ok(string) => Ok(string.into()),
       Err(e) => Err(e),
     }
   }
