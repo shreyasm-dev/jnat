@@ -61,7 +61,7 @@ impl<'a> Env<'a> {
     let string = self.jni_env.new_string(string);
 
     match string {
-      Ok(string) => Ok(JObject::from(string)),
+      Ok(string) => Ok(string.into()),
       Err(e) => Err(e),
     }
   }

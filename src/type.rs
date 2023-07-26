@@ -29,15 +29,15 @@ impl<'a> Type<'a> {
   /// Converts a Type into a String
   pub fn to_string(&self) -> String {
     let result = match self {
-      Type::Boolean => String::from("Z"),
-      Type::Byte => String::from("B"),
-      Type::Char => String::from("C"),
-      Type::Short => String::from("S"),
-      Type::Int => String::from("I"),
-      Type::Long => String::from("J"),
-      Type::Float => String::from("F"),
-      Type::Double => String::from("D"),
-      Type::Void => String::from("V"),
+      Type::Boolean => "Z".into(),
+      Type::Byte => "B".into(),
+      Type::Char => "C".into(),
+      Type::Short => "S".into(),
+      Type::Int => "I".into(),
+      Type::Long => "J".into(),
+      Type::Float => "F".into(),
+      Type::Double => "D".into(),
+      Type::Void => "V".into(),
       Type::Object(s) => format!("L{};", s),
       Type::Array(t) => format!("[{}", t.to_string()),
     };
