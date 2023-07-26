@@ -7,3 +7,6 @@ mod test;
 
 #[cfg(feature = "jni")]
 pub use jni;
+
+#[cfg(feature = "jnat-macros")]
+pub use jnat_macros;

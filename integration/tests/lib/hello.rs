@@ -2,6 +2,7 @@ extern crate jnat;
 
 use jnat::{
   env::Env,
+  jnat_macros::jnat,
   jni::{
     objects::{JClass, JString},
     sys::jstring,
@@ -9,8 +10,8 @@ use jnat::{
   },
 };
 
-#[no_mangle]
-pub extern "system" fn Java_Hello_hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
+#[jnat(Hello)]
+fn hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
   let mut env = Env::new(&env);
 
   let message: String = env.get_string(&name).expect("Failed to get name").into();

@@ -21,12 +21,13 @@ Add the following to `src/lib.rs`:
 ```rust
 use jnat::{
   env::{Class, Env},
+  jnat_macros::jnat,
   jni::{objects::JClass, JNIEnv}, // jni crate, re-exported by jnat
   signature::{Signature, Type},
 };
 
-#[no_mangle]
-pub extern "system" fn Java_HelloWorld_caller(env: JNIEnv, class: JClass) {
+#[jnat(HelloWorld)]
+fn caller(env: JNIEnv, class: JClass) {
   let mut env = env;
   let mut env = Env::new(&mut env);
   let mut class = Class::new(&mut env, class);
@@ -62,3 +63,4 @@ Compile the java file with `javac -h . HelloWorld.java`. Then, run `java -Djava.
 ## Notes
 
 - Jnat re-exports jni by default. If you want to use a different version of jni, you can disable either the default features or the `jni` feature.
+- Jnat exports a macro, `jnat::jnat_macros::jnat` (seen in the example above), which is used to generate the `Java_HelloWorld_caller` function. This macro can be disabled by disabling either the default features or the `jni-macros` feature. Note that the macro keeps the original function to prevent unintuitive behavior (so you can, in your Rust code, call just `example()` instead of `Java_org_example_Class_example()` while still allowing Java to call it).

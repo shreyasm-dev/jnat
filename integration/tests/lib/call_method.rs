@@ -2,16 +2,17 @@ extern crate jnat;
 
 use jnat::{
   env::Env,
+  jnat_macros::jnat,
   jni::{
     objects::{JClass, JObject},
     JNIEnv,
   },
   signature::{Signature, Type},
-  value::{Value, Object},
+  value::{Object, Value},
 };
 
-#[no_mangle]
-pub extern "system" fn Java_CallMethod_caller(env: JNIEnv, _: JClass, instance: JObject) {
+#[jnat(CallMethod)]
+fn caller(env: JNIEnv, _: JClass, instance: JObject) {
   let mut env = env;
   let mut env = Env::new(&mut env);
 
