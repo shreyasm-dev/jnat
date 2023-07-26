@@ -6,7 +6,8 @@ use jnat::{
   Env, Object, Signature, Type, Value,
 };
 
-#[jnat(CallStaticMethod)]
+jnat!(CallStaticMethod, caller, (JNIEnv, JClass) -> ());
+
 fn caller(env: JNIEnv, _: JClass) {
   let mut env = env;
   let mut env = Env::new(&mut env);

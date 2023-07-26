@@ -9,7 +9,8 @@ use jnat::{
   Env, Object, Signature, Type, Value,
 };
 
-#[jnat(CallMethod)]
+jnat!(CallMethod, caller, (JNIEnv, JClass, JObject) -> ());
+
 fn caller(env: JNIEnv, _: JClass, instance: JObject) {
   let mut env = env;
   let mut env = Env::new(&mut env);

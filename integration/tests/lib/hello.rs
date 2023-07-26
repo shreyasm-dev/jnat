@@ -10,7 +10,8 @@ use jnat::{
   Env,
 };
 
-#[jnat(Hello)]
+jnat!(Hello, caller, (JNIEnv, JClass, JString) -> ());
+
 fn hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
   let mut env = Env::new(&env);
 
