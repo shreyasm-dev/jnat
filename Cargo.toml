@@ -1,6 +1,6 @@
 [package]
 name = "jnat"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 license = "MIT"
 description = "A wrapper around the jni crate"
@@ -11,7 +11,7 @@ documentation = "https://docs.rs/jnat/"
 
 [dependencies]
 jni = "0.21.1"
-jnat-macros = { version = "0.1.0", optional = true }
+jnat-macros = { version = "0.1.0", optional = true, path = "jnat-macros" }
 
 [[test]]
 name = "integration"
