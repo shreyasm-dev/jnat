@@ -82,7 +82,7 @@ impl<'a> Object<'a> {
   ) -> jni::errors::Result<JValueOwned<'_>> {
     let signature: String = signature.into();
 
-    let mut jni_env = unsafe { jni::JNIEnv::from_raw(self.env.get_native_interface()) }.unwrap();
+    let mut jni_env = self.env.get_jni_env();
     jni_env.call_method(
       *self,
       name,
