@@ -19,7 +19,7 @@ impl<'a> Env<'a> {
   ///
   /// * `jni_env` - The JNI environment
   pub fn new(jni_env: &'a JNIEnv<'a>) -> Env<'a> {
-    Env { jni_env: jni_env }
+    Env { jni_env }
   }
 
   /// Gets the native interface
@@ -34,13 +34,7 @@ impl<'a> Env<'a> {
   /// * `name` - The qualified name of the class
   pub fn class(&'a self, name: &str) -> Result<Class<'a>, Error> {
     let mut jni_env = self.get_jni_env();
-
-    let class = jni_env.find_class(name);
-
-    match class {
-      Ok(class) => Ok(Class::new(self, class)),
-      Err(e) => Err(e),
-    }
+    Ok(Class::new(self, jni_env.find_class(name)?))
   }
 
   /// Converts a JObject into an Object
@@ -58,12 +52,7 @@ impl<'a> Env<'a> {
   ///
   /// * `string` - The string to convert
   pub fn string(&'a self, string: &'a str) -> Result<JObject<'a>, Error> {
-    let string = self.jni_env.new_string(string);
-
-    match string {
-      Ok(string) => Ok(string.into()),
-      Err(e) => Err(e),
-    }
+    Ok(JObject::from(self.jni_env.new_string(string)?))
   }
 
   /// Gets a string from the JVM, given a JString
@@ -73,13 +62,7 @@ impl<'a> Env<'a> {
   /// * `string` - The JString to convert
   pub fn get_string(&'a self, string: &'a JString<'a>) -> Result<String, Error> {
     let mut jni_env = self.get_jni_env();
-
-    let string = jni_env.get_string(&string);
-
-    match string {
-      Ok(string) => Ok(string.into()),
-      Err(e) => Err(e),
-    }
+    Ok(jni_env.get_string(&string)?.into())
   }
 
   /// Gets a JValueGen<JObject>, given a Value
