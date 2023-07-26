@@ -1,13 +1,13 @@
 extern crate jnat;
 
 use jnat::{
-  env::Env,
   jnat_macros::jnat,
   jni::{
     objects::{JClass, JString},
     sys::jstring,
     JNIEnv,
   },
+  Env,
 };
 
 #[jnat(Hello)]

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod signature {
-  use crate::signature::{Signature, Type};
+  use crate::{r#type::Type, signature::Signature};
 
   #[test]
   fn signature_from() {

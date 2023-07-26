@@ -1,11 +1,9 @@
 extern crate jnat;
 
 use jnat::{
-  env::Env,
   jnat_macros::jnat,
   jni::{objects::JClass, JNIEnv},
-  signature::{Signature, Type},
-  value::{Object, Value},
+  Env, Object, Signature, Type, Value,
 };
 
 #[jnat(CallStaticMethod)]
