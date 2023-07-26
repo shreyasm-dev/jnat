@@ -10,12 +10,12 @@ use jnat::{
   Env,
 };
 
-jnat!(Hello, caller, (JNIEnv, JClass, JString) -> ());
+jnat!(Hello, hello, (JNIEnv, JClass, JString) -> jstring);
 
 fn hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
   let mut env = Env::new(&env);
 
-  let message: String = env.get_string(&name).expect("Failed to get name").into();
+  let message: String = env.get_string(name).expect("Failed to get name").into();
   let message = format!("Hello, {}!", message);
 
   let output = env.string(&message).unwrap();
