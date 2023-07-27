@@ -32,26 +32,27 @@ impl<'a> Env<'a> {
   /// # Arguments
   ///
   /// * `name` - The qualified name of the class
-  pub fn class(&'a self, name: &str) -> Result<Class<'a>, Error> {
+  pub fn get_class(&'a self, name: &str) -> Result<Class<'a>, Error> {
     let mut jni_env = self.get_jni_env();
     Ok(Class::new(self, jni_env.find_class(name)?))
   }
 
-  /// Converts a JObject into an Object
+  // We won't be using this for consistency reasons
+  /* /// Converts a JObject into an Object
   ///
   /// # Arguments
   ///
   /// * `object` - The JObject to wrap
-  pub fn object(&'a self, object: &'a JObject<'a>) -> Object<'a> {
+  pub fn get_object(&'a self, object: &'a JObject<'a>) -> Object<'a> {
     Object::new(self, object)
-  }
+  } */
 
   /// Converts a string into a JObject
   ///
   /// # Arguments
   ///
   /// * `string` - The string to convert
-  pub fn string(&'a self, string: &'a str) -> Result<JObject<'a>, Error> {
+  pub fn new_string(&'a self, string: &'a str) -> Result<JObject<'a>, Error> {
     Ok(JObject::from(self.jni_env.new_string(string)?))
   }
 
@@ -70,7 +71,7 @@ impl<'a> Env<'a> {
   /// # Arguments
   ///
   /// * `value` - The Value to convert
-  pub fn value(self, value: Value<'a>) -> JValueGen<&'a JObject<'a>> {
+  pub fn new_value(self, value: Value<'a>) -> JValueGen<&'a JObject<'a>> {
     match value {
       Value::Boolean(b) => JValueGen::Bool(b as jboolean),
       Value::Byte(b) => JValueGen::Byte(b),

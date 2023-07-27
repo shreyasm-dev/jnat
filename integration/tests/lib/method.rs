@@ -9,16 +9,13 @@ use jnat::{
   Env, Object, Signature, Type, Value,
 };
 
-jnat!(CallMethod, caller, (JNIEnv, JClass, JObject) -> ());
+jnat!(Method, caller, (JNIEnv, JClass, JObject) -> ());
 
 fn caller(mut env: JNIEnv, _: JClass, instance: JObject) {
   let mut env = Env::new(&mut env);
+  let mut instance = Object::new(&env, &instance);
 
-  // Alternatively:
-  // let mut instance = Object::new(&env, &instance);
-  let mut instance = env.object(&instance);
-
-  let s = env.string(" - Hello, world!").unwrap();
+  let s = env.new_string(" - Hello, world!").unwrap();
 
   instance
     .call_method(

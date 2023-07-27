@@ -25,10 +25,9 @@ pub enum Type<'a> {
   Array(&'a Type<'a>),
 }
 
-impl<'a> Type<'a> {
-  /// Converts a Type into a String
-  pub fn to_string(&self) -> String {
-    let result = match self {
+impl<'a> From<Type<'a>> for String {
+  fn from(r#type: Type) -> Self {
+    let result = match r#type {
       Type::Boolean => "Z".into(),
       Type::Byte => "B".into(),
       Type::Char => "C".into(),
@@ -39,7 +38,7 @@ impl<'a> Type<'a> {
       Type::Double => "D".into(),
       Type::Void => "V".into(),
       Type::Object(s) => format!("L{};", s),
-      Type::Array(t) => format!("[{}", t.to_string()),
+      Type::Array(t) => format!("[{}", <Type as Into<String>>::into(*t)),
     };
 
     result

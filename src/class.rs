@@ -41,7 +41,7 @@ impl<'a> Class<'a> {
       signature,
       args
         .iter()
-        .map(|o| self.env.value(*o))
+        .map(|o| self.env.new_value(*o))
         .collect::<Vec<JValueGen<&JObject>>>()
         .as_slice(),
     )
@@ -53,7 +53,7 @@ impl<'a> Class<'a> {
   ///
   /// * `signature` - The signature of the constructor
   /// * `args` - The arguments to pass to the constructor
-  pub fn new_instance(&self, signature: Signature, args: &[Value]) -> jni::errors::Result<JObject> {
+  pub fn create(&self, signature: Signature, args: &[Value]) -> jni::errors::Result<JObject> {
     let class = &self.class;
     let signature: String = signature.into();
 
@@ -63,7 +63,7 @@ impl<'a> Class<'a> {
       signature,
       args
         .iter()
-        .map(|o| self.env.value(*o))
+        .map(|o| self.env.new_value(*o))
         .collect::<Vec<JValueGen<&JObject>>>()
         .as_slice(),
     )
@@ -81,7 +81,7 @@ impl<'a> Class<'a> {
     r#type: Type,
   ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
     let class = &self.class;
-    let r#type: String = r#type.to_string();
+    let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
     jni_env.get_static_field(class, name, r#type)
@@ -100,7 +100,7 @@ impl<'a> Class<'a> {
     value: Value,
   ) -> jni::errors::Result<()> {
     let class = &self.class;
-    let value = self.env.value(value);
+    let value = self.env.new_value(value);
     let field = self.get_static_field_id(name, r#type)?;
 
     let mut jni_env = self.env.get_jni_env();
@@ -119,7 +119,7 @@ impl<'a> Class<'a> {
     r#type: Type,
   ) -> jni::errors::Result<JStaticFieldID> {
     let class = &self.class;
-    let r#type: String = r#type.to_string();
+    let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
     jni_env.get_static_field_id(class, name, r#type)

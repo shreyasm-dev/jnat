@@ -30,10 +30,10 @@ impl<'a> From<Signature<'a>> for String {
 
     signature.push('(');
     for arg in value.arguments {
-      signature.push_str(&arg.to_string());
+      signature.push_str(&<Type as Into<String>>::into(*arg));
     }
     signature.push(')');
-    signature.push_str(&value.return_type.to_string());
+    signature.push_str(&<Type as Into<String>>::into(value.return_type));
 
     signature
   }

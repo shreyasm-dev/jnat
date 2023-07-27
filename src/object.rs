@@ -41,7 +41,7 @@ impl<'a> Object<'a> {
       signature,
       args
         .iter()
-        .map(|o| self.env.value(*o))
+        .map(|o| self.env.new_value(*o))
         .collect::<Vec<JValueGen<&JObject>>>()
         .as_slice(),
     )
@@ -58,7 +58,7 @@ impl<'a> Object<'a> {
     name: &str,
     r#type: Type,
   ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
-    let r#type: String = r#type.to_string();
+    let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
     jni_env.get_field(self.object, name, r#type)
@@ -76,10 +76,10 @@ impl<'a> Object<'a> {
     r#type: Type,
     value: Value,
   ) -> jni::errors::Result<()> {
-    let r#type: String = r#type.to_string();
+    let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
-    jni_env.set_field(self.object, name, r#type, self.env.value(value))
+    jni_env.set_field(self.object, name, r#type, self.env.new_value(value))
   }
 
   /// Gets the wrapped object

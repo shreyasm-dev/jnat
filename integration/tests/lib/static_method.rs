@@ -6,16 +6,16 @@ use jnat::{
   Env, Object, Signature, Type, Value,
 };
 
-jnat!(CallStaticMethod, caller, (JNIEnv, JClass) -> ());
+jnat!(StaticMethod, caller, (JNIEnv, JClass) -> ());
 
 fn caller(mut env: JNIEnv, _: JClass) {
   let mut env = Env::new(&mut env);
 
   // Alternatively (remember to rename the second parameter of caller to `class`):
   // let mut class = Class::new(&env, class);
-  let mut class = env.class("CallStaticMethod").expect("Failed to find class");
+  let mut class = env.get_class("StaticMethod").expect("Failed to find class");
 
-  let s = env.string(" - Hello, world!").unwrap();
+  let s = env.new_string(" - Hello, world!").unwrap();
 
   class
     .call_static_method(

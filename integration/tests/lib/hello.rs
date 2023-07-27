@@ -18,7 +18,7 @@ fn hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
   let message: String = env.get_string(name).expect("Failed to get name").into();
   let message = format!("Hello, {}!", message);
 
-  let output = env.string(&message).unwrap();
+  let output = env.new_string(&message).unwrap();
 
   output.into_raw()
 }

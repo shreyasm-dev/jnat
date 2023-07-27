@@ -10,7 +10,7 @@ jnat!(StaticField, method, (JNIEnv, JClass) -> ());
 
 fn method(mut env: JNIEnv, _: JClass) {
   let mut env = Env::new(&mut env);
-  let mut class = env.class("StaticField").unwrap();
+  let mut class = env.get_class("StaticField").unwrap();
 
   if let Value::Int(value) = env.get_value(
     class

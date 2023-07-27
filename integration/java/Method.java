@@ -1,12 +1,12 @@
-public class CallMethod {
-  private static native void caller(CallMethod obj);
+public class Method {
+  private static native void caller(Method obj);
 
   static {
-    System.loadLibrary("call_method");
+    System.loadLibrary("method");
   }
 
   public static void main(String[] args) {
-    CallMethod.caller(new CallMethod());
+    Method.caller(new Method());
   }
 
   public void callback(int n, String s) {
