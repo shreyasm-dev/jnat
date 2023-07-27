@@ -1,5 +1,5 @@
 use crate::{env::Env, signature::Signature, value::Value, Type};
-use jni::objects::{JClass, JObject, JValueGen};
+use jni::objects::{JClass, JObject, JStaticFieldID, JValueGen};
 
 /// A struct wrapping a JClass
 pub struct Class<'a> {
@@ -70,9 +70,9 @@ impl<'a> Class<'a> {
   }
 
   /// Gets a static field on the class
-  /// 
+  ///
   /// # Arguments
-  /// 
+  ///
   /// * `name` - The name of the field
   /// * `type` - The type of the field
   pub fn get_static_field(
@@ -85,6 +85,44 @@ impl<'a> Class<'a> {
 
     let mut jni_env = self.env.get_jni_env();
     jni_env.get_static_field(class, name, r#type)
+  }
+
+  /// Sets a static field on the class
+  ///
+  /// # Arguments
+  ///
+  /// * `name` - The name of the field
+  /// * `value` - The value to set the field to
+  pub fn set_static_field(
+    &self,
+    name: &str,
+    r#type: Type,
+    value: Value,
+  ) -> jni::errors::Result<()> {
+    let class = &self.class;
+    let value = self.env.value(value);
+    let field = self.get_static_field_id(name, r#type)?;
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.set_static_field(class, field, value)
+  }
+
+  /// Get a static field ID on the class
+  ///
+  /// # Arguments
+  ///
+  /// * `name` - The name of the field
+  /// * `signature` - The signature of the field
+  pub fn get_static_field_id(
+    &self,
+    name: &str,
+    r#type: Type,
+  ) -> jni::errors::Result<JStaticFieldID> {
+    let class = &self.class;
+    let r#type: String = r#type.to_string();
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.get_static_field_id(class, name, r#type)
   }
 
   /// Get the wrapped class

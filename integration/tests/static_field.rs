@@ -1,7 +1,7 @@
 use super::IntegrationTest;
 
 fn test_static_field(s: String) -> bool {
-  return s == "0\n";
+  return s == "0\n1\n";
 }
 
 inventory::submit! {IntegrationTest {
