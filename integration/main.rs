@@ -28,7 +28,8 @@ fn get_dylib_name(lib: &str) -> String {
 }
 
 fn setup() {
-  println!("Remember to run cargo build before running this!");
+  println!("Remember to run cargo build before running this");
+  println!("If you get weird errors, try running cargo clean");
 
   env::set_var("RUST_APP_LOG", "debug");
   pretty_env_logger::init_custom_env("RUST_APP_LOG");
@@ -187,6 +188,8 @@ fn main() {
         .expect(format!("Failed to remove {}.pdb", t.lib).as_str());
     }
   }
+
+  println!();
 
   teardown();
 }
