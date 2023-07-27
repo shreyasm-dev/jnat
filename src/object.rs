@@ -1,6 +1,5 @@
+use crate::{env::Env, signature::Signature, value::Value, Class, Type};
 use jni::objects::{JObject, JValueGen};
-
-use crate::{env::Env, signature::Signature, value::Value};
 
 /// A struct wrapping a JObject
 #[derive(Clone, Copy)]
@@ -48,8 +47,49 @@ impl<'a> Object<'a> {
     )
   }
 
+  /// Gets a field on the object
+  ///
+  /// # Arguments
+  ///
+  /// * `name` - The name of the field
+  /// * `type` - The type of the field
+  pub fn get_field(
+    &self,
+    name: &str,
+    r#type: Type,
+  ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
+    let r#type: String = r#type.to_string();
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.get_field(self.object, name, r#type)
+  }
+
+  /// Sets a field on the object
+  ///
+  /// # Arguments
+  ///
+  /// * `name` - The name of the field
+  /// * `value` - The value to set the field to
+  pub fn set_field(
+    &self,
+    name: &str,
+    r#type: Type,
+    value: Value,
+  ) -> jni::errors::Result<()> {
+    let r#type: String = r#type.to_string();
+
+    let mut jni_env = self.env.get_jni_env();
+    jni_env.set_field(self.object, name, r#type, self.env.value(value))
+  }
+
   /// Gets the wrapped object
   pub fn get_object(&self) -> &'a JObject<'a> {
     self.object
+  }
+
+  /// Gets the class of the object
+  pub fn get_class(&self) -> jni::errors::Result<Class> {
+    let jni_env = self.env.get_jni_env();
+    Ok(Class::new(self.env, jni_env.get_object_class(self.object)?))
   }
 }

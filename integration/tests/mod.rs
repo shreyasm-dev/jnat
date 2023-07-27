@@ -1,5 +1,6 @@
 pub mod call_method;
 pub mod call_static_method;
+pub mod field;
 pub mod hello;
 pub mod static_field;
 
