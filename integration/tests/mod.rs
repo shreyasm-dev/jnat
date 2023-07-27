@@ -1,6 +1,7 @@
 pub mod call_method;
 pub mod call_static_method;
 pub mod hello;
+pub mod static_field;
 
 #[derive(Debug)]
 pub struct IntegrationTest {
