@@ -11,8 +11,7 @@ use jnat::{
 
 jnat!(CallMethod, caller, (JNIEnv, JClass, JObject) -> ());
 
-fn caller(env: JNIEnv, _: JClass, instance: JObject) {
-  let mut env = env;
+fn caller(mut env: JNIEnv, _: JClass, instance: JObject) {
   let mut env = Env::new(&mut env);
 
   // Alternatively:

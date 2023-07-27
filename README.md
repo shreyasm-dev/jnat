@@ -30,8 +30,7 @@ use jnat::{
 
 jnat!(HelloWorld, caller, (JNIEnv, JClass) -> ());
 
-fn caller(env: JNIEnv, class: JClass) {
-  let mut env = env;
+fn caller(mut env: JNIEnv, class: JClass) {
   let mut env = Env::new(&mut env);
   let class = Class::new(&mut env, class);
 
