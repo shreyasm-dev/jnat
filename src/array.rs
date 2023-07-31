@@ -18,15 +18,6 @@ pub struct BooleanArray<'a> {
   array: JBooleanArray<'a>,
 }
 
-impl<'a> BooleanArray<'a> {
-  pub fn new(env: &'a Env<'a>, length: usize) -> BooleanArray<'a> {
-    let jni_env = env.get_jni_env();
-    let array = jni_env.new_boolean_array(length as i32).unwrap();
-
-    BooleanArray { env, array }
-  }
-}
-
 impl<'a> Array<'a, bool, JBooleanArray<'a>> for BooleanArray<'a> {
   fn new(env: &'a Env<'a>, length: usize) -> Self {
     let jni_env = env.get_jni_env();
