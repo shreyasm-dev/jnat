@@ -24,7 +24,7 @@ impl<'a> Env<'a> {
 
   /// Gets the native interface
   pub fn get_jni_env(&self) -> JNIEnv<'_> {
-    unsafe { JNIEnv::from_raw(self.jni_env.get_native_interface()) }.unwrap()
+    unsafe { JNIEnv::unsafe_clone(&self.jni_env) }
   }
 
   /// Gets a class, given a qualified name
