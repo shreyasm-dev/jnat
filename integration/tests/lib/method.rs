@@ -11,8 +11,8 @@ use jnat::{
 
 jnat!(Method, caller, (JNIEnv, JClass, JObject) -> ());
 
-fn caller(mut env: JNIEnv, _: JClass, instance: JObject) {
-  let mut env = Env::new(&mut env);
+fn caller(env: JNIEnv, _: JClass, instance: JObject) {
+  let mut env = Env::new(&env);
   let mut instance = Object::new(&env, &instance);
 
   let s = env.new_string(" - Hello, world!").unwrap();

@@ -11,16 +11,12 @@ use jnat::{
 
 jnat!(Field, method, (JNIEnv, JClass, JObject) -> ());
 
-fn method(mut env: JNIEnv, _: JClass, instance: JObject) {
-  let mut env = Env::new(&mut env);
+fn method(env: JNIEnv, _: JClass, instance: JObject) {
+  let mut env = Env::new(&env);
   let instance = Object::new(&env, &instance);
 
-  if let Value::Int(value) = env.get_value(
-    instance
-      .get_field("field", Type::Int)
-      .unwrap()
-      .borrow(),
-  ) {
+  if let Value::Int(value) = env.get_value(instance.get_field("field", Type::Int).unwrap().borrow())
+  {
     println!("{}", value);
   } else {
     unreachable!();
@@ -30,12 +26,8 @@ fn method(mut env: JNIEnv, _: JClass, instance: JObject) {
     .set_field("field", Type::Int, Value::Int(1))
     .unwrap();
 
-  if let Value::Int(value) = env.get_value(
-    instance
-      .get_field("field", Type::Int)
-      .unwrap()
-      .borrow(),
-  ) {
+  if let Value::Int(value) = env.get_value(instance.get_field("field", Type::Int).unwrap().borrow())
+  {
     println!("{}", value);
   } else {
     unreachable!();

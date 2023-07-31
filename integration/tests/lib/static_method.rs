@@ -8,8 +8,8 @@ use jnat::{
 
 jnat!(StaticMethod, caller, (JNIEnv, JClass) -> ());
 
-fn caller(mut env: JNIEnv, _: JClass) {
-  let mut env = Env::new(&mut env);
+fn caller(env: JNIEnv, _: JClass) {
+  let mut env = Env::new(&env);
 
   // Alternatively (remember to rename the second parameter of caller to `class`):
   // let mut class = Class::new(&env, class);

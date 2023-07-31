@@ -12,7 +12,7 @@ use jnat::{
 
 jnat!(Hello, hello, (JNIEnv, JClass, JString) -> jstring);
 
-fn hello(mut env: JNIEnv, _: JClass, name: JString) -> jstring {
+fn hello(env: JNIEnv, _: JClass, name: JString) -> jstring {
   let mut env = Env::new(&env);
 
   let message: String = env.get_string(name).expect("Failed to get name").into();

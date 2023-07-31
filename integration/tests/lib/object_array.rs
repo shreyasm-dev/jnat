@@ -2,24 +2,31 @@ extern crate jnat;
 
 use jnat::{
   jnat_macros::jnat,
-  jni::{objects::{JClass, JString}, JNIEnv},
+  jni::{
+    objects::{JClass, JString},
+    JNIEnv,
+  },
   Array, Env, ObjectArray,
 };
 
 jnat!(ObjectArray, method, (JNIEnv, JClass) -> ());
 
-fn method(mut env: JNIEnv, _: JClass) {
-  let mut env = Env::new(&mut env);
+fn method(env: JNIEnv, _: JClass) {
+  let mut env = Env::new(&env);
 
   let object_array = env.new_object_array(10, "java/lang/String");
   print_array(env, &object_array);
   print!("-");
 
   for i in 0..object_array.length() {
-    object_array.set(i, env.new_string("test").unwrap()).unwrap();
+    object_array
+      .set(i, env.new_string("test").unwrap())
+      .unwrap();
   }
 
-  object_array.set(0, env.new_string("hello").unwrap()).unwrap();
+  object_array
+    .set(0, env.new_string("hello").unwrap())
+    .unwrap();
 
   print_array(env, &object_array);
   println!();

@@ -9,8 +9,8 @@ use std::fmt::Display;
 
 jnat!(Array, method, (JNIEnv, JClass) -> ());
 
-fn method(mut env: JNIEnv, _: JClass) {
-  let mut env = Env::new(&mut env);
+fn method(env: JNIEnv, _: JClass) {
+  let mut env = Env::new(&env);
 
   let boolean_array = env.new_boolean_array(10);
   print_array(&boolean_array);

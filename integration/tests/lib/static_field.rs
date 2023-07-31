@@ -8,8 +8,8 @@ use jnat::{
 
 jnat!(StaticField, method, (JNIEnv, JClass) -> ());
 
-fn method(mut env: JNIEnv, _: JClass) {
-  let mut env = Env::new(&mut env);
+fn method(env: JNIEnv, _: JClass) {
+  let mut env = Env::new(&env);
   let mut class = env.get_class("StaticField").unwrap();
 
   if let Value::Int(value) = env.get_value(
@@ -23,7 +23,9 @@ fn method(mut env: JNIEnv, _: JClass) {
     unreachable!();
   }
 
-  class.set_static_field("staticField", Type::Int, Value::Int(1)).unwrap();
+  class
+    .set_static_field("staticField", Type::Int, Value::Int(1))
+    .unwrap();
 
   if let Value::Int(value) = env.get_value(
     class
