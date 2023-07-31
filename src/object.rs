@@ -53,11 +53,7 @@ impl<'a> Object<'a> {
   ///
   /// * `name` - The name of the field
   /// * `type` - The type of the field
-  pub fn get_field(
-    &self,
-    name: &str,
-    r#type: Type,
-  ) -> jni::errors::Result<JValueGen<JObject<'_>>> {
+  pub fn get_field(&self, name: &str, r#type: Type) -> jni::errors::Result<JValueGen<JObject<'_>>> {
     let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
@@ -70,12 +66,7 @@ impl<'a> Object<'a> {
   ///
   /// * `name` - The name of the field
   /// * `value` - The value to set the field to
-  pub fn set_field(
-    &self,
-    name: &str,
-    r#type: Type,
-    value: Value,
-  ) -> jni::errors::Result<()> {
+  pub fn set_field(&self, name: &str, r#type: Type, value: Value) -> jni::errors::Result<()> {
     let r#type: String = r#type.into();
 
     let mut jni_env = self.env.get_jni_env();
