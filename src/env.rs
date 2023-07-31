@@ -1,4 +1,4 @@
-use crate::{class::Class, object::Object, value::Value, BooleanArray};
+use crate::{class::Class, object::Object, value::Value, Array, BooleanArray, ByteArray, CharArray, DoubleArray, FloatArray, IntArray, LongArray, ShortArray, ObjectArray};
 use jni::{
   errors::Error,
   objects::{JObject, JString, JValueGen},
@@ -107,11 +107,84 @@ impl<'a> Env<'a> {
   }
 
   /// Creates a new boolean array
+  ///
+  /// # Arguments
+  ///
+  /// * `length` - The length of the array
+  pub fn new_boolean_array(&'a self, length: usize) -> BooleanArray<'a> {
+    BooleanArray::new(self, length)
+  }
+
+  /// Creates a new byte array
+  ///
+  /// # Arguments
+  ///
+  /// * `length` - The length of the array
+  pub fn new_byte_array(&'a self, length: usize) -> ByteArray<'a> {
+    ByteArray::new(self, length)
+  }
+
+  /// Creates a new char array
   /// 
   /// # Arguments
   /// 
   /// * `length` - The length of the array
-  pub fn new_boolean_array(&'a self, length: usize) -> BooleanArray<'a> {
-    BooleanArray::new(self, length)
+  pub fn new_char_array(&'a self, length: usize) -> CharArray<'a> {
+    CharArray::new(self, length)
+  }
+
+  /// Creates a new double array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_double_array(&'a self, length: usize) -> DoubleArray<'a> {
+    DoubleArray::new(self, length)
+  }
+
+  /// Creates a new float array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_float_array(&'a self, length: usize) -> FloatArray<'a> {
+    FloatArray::new(self, length)
+  }
+
+  /// Creates a new int array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_int_array(&'a self, length: usize) -> IntArray<'a> {
+    IntArray::new(self, length)
+  }
+
+  /// Creates a new long array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_long_array(&'a self, length: usize) -> LongArray<'a> {
+    LongArray::new(self, length)
+  }
+
+  /// Creates a new short array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_short_array(&'a self, length: usize) -> ShortArray<'a> {
+    ShortArray::new(self, length)
+  }
+
+  /// Creates a new object array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  /// * `class` - The class of the array
+  pub fn new_object_array(&'a self, length: usize, class: &str) -> ObjectArray<'a> {
+    ObjectArray::new_with(self, length, class)
   }
 }

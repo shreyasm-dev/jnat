@@ -1,11 +1,11 @@
-public class BooleanArray {
+public class Array {
   private static native void method();
 
   static {
-    System.loadLibrary("boolean_array");
+    System.loadLibrary("array");
   }
 
   public static void main(String[] args) {
-    BooleanArray.method();
+    Array.method();
   }
 }

@@ -1,7 +1,8 @@
-pub mod boolean_array;
+pub mod array;
 pub mod field;
 pub mod hello;
 pub mod method;
+pub mod object_array;
 pub mod static_field;
 pub mod static_method;
 
