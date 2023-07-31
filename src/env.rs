@@ -1,4 +1,4 @@
-use crate::{class::Class, object::Object, value::Value};
+use crate::{class::Class, object::Object, value::Value, BooleanArray};
 use jni::{
   errors::Error,
   objects::{JObject, JString, JValueGen},
@@ -104,5 +104,14 @@ impl<'a> Env<'a> {
       JValueGen::Object(o) => Value::Object(Object::new(self, o)),
       JValueGen::Void => Value::Void,
     }
+  }
+
+  /// Creates a new boolean array
+  /// 
+  /// # Arguments
+  /// 
+  /// * `length` - The length of the array
+  pub fn new_boolean_array(&'a self, length: usize) -> BooleanArray<'a> {
+    BooleanArray::new(self, length)
   }
 }

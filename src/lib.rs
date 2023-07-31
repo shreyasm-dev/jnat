@@ -1,3 +1,4 @@
+mod array;
 mod class;
 mod env;
 mod object;
@@ -5,6 +6,7 @@ mod signature;
 mod r#type;
 mod value;
 
+pub use array::*;
 pub use class::*;
 pub use env::*;
 pub use object::*;
